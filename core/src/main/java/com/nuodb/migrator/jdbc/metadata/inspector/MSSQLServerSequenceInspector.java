@@ -62,24 +62,24 @@ public class MSSQLServerSequenceInspector extends TableInspectorBase<Table, Tabl
             selectColumn.column("? AS TABLE_CATALOG");
             parameters.add(tableInspectionScope.getCatalog());
         }
-        selectColumn.column("SCHEMAS.NAME AS TABLE_SCHEMA");
-        selectColumn.column("TABLES.NAME AS TABLE_NAME");
-        selectColumn.column("COLUMNS.NAME AS COLUMN_NAME");
+        selectColumn.column("schemas.name AS TABLE_SCHEMA");
+        selectColumn.column("tables.name AS TABLE_NAME");
+        selectColumn.column("columns.name AS COLUMN_NAME");
 
         String catalog = isEmpty(tableInspectionScope.getCatalog()) ? "" : (tableInspectionScope.getCatalog() + ".");
-        selectColumn.from(catalog + "SYS.SCHEMAS");
-        selectColumn.innerJoin(catalog + "SYS.TABLES", "SCHEMAS.SCHEMA_ID=TABLES.SCHEMA_ID");
-        selectColumn.innerJoin(catalog + "SYS.COLUMNS", "COLUMNS.OBJECT_ID=TABLES.OBJECT_ID");
+        selectColumn.from(catalog + "sys.schemas");
+        selectColumn.innerJoin(catalog + "sys.tables", "schemas.schema_id=tables.schema_id");
+        selectColumn.innerJoin(catalog + "sys.columns", "columns.object_id=tables.object_id");
 
         if (!isEmpty(tableInspectionScope.getSchema())) {
-            selectColumn.where("SCHEMAS.NAME=?");
+            selectColumn.where("schemas.name=?");
             parameters.add(tableInspectionScope.getSchema());
         }
         if (!isEmpty(tableInspectionScope.getTable())) {
-            selectColumn.where("TABLES.NAME=?");
+            selectColumn.where("tables.name=?");
             parameters.add(tableInspectionScope.getTable());
         }
-        selectColumn.where("IS_IDENTITY=1");
+        selectColumn.where("is_identity=1");
 
         SelectQuery selectTable = new SelectQuery();
         selectTable.column("C.*");

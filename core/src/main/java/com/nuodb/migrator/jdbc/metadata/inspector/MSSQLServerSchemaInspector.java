@@ -66,14 +66,14 @@ public class MSSQLServerSchemaInspector extends ManagedInspectorBase<Catalog, Sc
             query.column("? AS TABLE_CATALOG");
             parameters.add(schemaInspectionScope.getCatalog());
         }
-        query.column("S.NAME AS TABLE_SCHEMA");
+        query.column("s.name AS TABLE_SCHEMA");
         String catalog = isEmpty(schemaInspectionScope.getCatalog()) ? EMPTY : schemaInspectionScope.getCatalog() + ".";
-        query.from(catalog + "SYS.SCHEMAS S");
-        query.leftJoin(catalog + "SYS.SYSUSERS U", "U.NAME=S.NAME");
+        query.from(catalog + "sys.schemas s");
+        query.leftJoin(catalog + "sys.sysusers u", "u.name=s.name");
 
-        query.where("(ISSQLROLE=0 OR ISSQLROLE IS NULL)");
+        query.where("(issqlrole=0 OR issqlrole IS NULL)");
         if (!isEmpty(schemaInspectionScope.getSchema())) {
-            query.where("S.NAME LIKE ?");
+            query.where("s.name LIKE ?");
             parameters.add(schemaInspectionScope.getSchema());
         }
         query.orderBy(newArrayList("TABLE_CATALOG", "TABLE_SCHEMA"));
